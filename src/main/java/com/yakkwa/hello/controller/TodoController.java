@@ -53,19 +53,15 @@ public class TodoController {
   }
 
   @GetMapping
-  public ResponseEntity<?> retrieveTodoList(@RequestBody TodoDTO dto) {
-    try {
-      String temporaryUserId = "temporary-user";
+  public ResponseEntity<?> retrieveTodoList() {
+    String temporaryUserId = "temporary-user";
 
-      List<TodoEntity> entities = service.retrieve(temporaryUserId);
+    List<TodoEntity> entities = service.retrieve(temporaryUserId);
 
-      List<TodoDTO> dtos = entities.stream().map(e -> new TodoDTO(e)).collect(Collectors.toList());
-      return ResponseEntity.ok().body(ResponseDTO.<TodoDTO>builder().data(dtos).build());
+    List<TodoDTO> dtos = entities.stream().map(TodoDTO::new).collect(Collectors.toList());
 
-    } catch (Exception e) {
-      e.getMessage();
-      return ResponseEntity.badRequest().body(ResponseDTO.<TodoDTO>builder().error(e.getMessage()).build());
-    }
+    ResponseDTO<TodoDTO> response = ResponseDTO.<TodoDTO>builder().data(dtos).build();
+    return ResponseEntity.ok().body(response);
   }
 
   @PutMapping
